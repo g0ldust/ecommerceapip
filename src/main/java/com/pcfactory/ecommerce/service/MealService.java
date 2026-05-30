@@ -31,7 +31,7 @@ public class MealService {
 
 
     public Mono<List<Meal>> searchMealByName(String name){
-        return webClient.get()
+        return this.webClient.get()
                         .uri(uriBuilder -> uriBuilder
                         .path("/api/json/v1/1/search.php")
                         .queryParam("s", name)
@@ -42,7 +42,7 @@ public class MealService {
     }
 
     public Mono<List<Meal>> searchMealByFirstLetter(String firstLetter) {
-        return webClient.get()
+        return this.webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/api/json/v1/1/search.php")
                         .queryParam("f", firstLetter)

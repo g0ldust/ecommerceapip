@@ -25,11 +25,16 @@ public class MealController {
     }
 
     @GetMapping("/byname/search")
-    public Mono<List<Meal>> searchMealByName(@RequestParam(value = "s", defaultValue = "Arrabiata") String mealName){
+    public Mono<List<Meal>> searchMeal(@RequestParam(value = "s", defaultValue = "Arrabiata") String mealName){
         return mealService.searchMealByName(mealName);
     }
     @GetMapping("/byletter/search")
-    public Mono<Object> searchMealByLetter(@RequestParam(name = "f", defaultValue = "a") String firstLetter) {
+    public Mono<List<Meal>> searchMealByLetter(@RequestParam(name = "f", defaultValue = "a") String firstLetter) {
         return mealService.searchMealByFirstLetter(firstLetter);
+    }
+
+    @GetMapping("/random")
+    public Mono<List<Meal>> getRandomMeal(){
+        return mealService.getRandomMeal();
     }
 }
