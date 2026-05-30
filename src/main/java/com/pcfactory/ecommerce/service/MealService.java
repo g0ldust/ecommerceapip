@@ -2,6 +2,8 @@ package com.pcfactory.ecommerce.service;
 
 import com.pcfactory.ecommerce.dto.Category;
 import com.pcfactory.ecommerce.dto.CategoryResponse;
+import com.pcfactory.ecommerce.dto.Meal;
+import com.pcfactory.ecommerce.dto.MealResponse;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -28,23 +30,34 @@ public class MealService {
 
 
 
-    public Mono<Object> searchMealByName(String name){
+    public Mono<List<Meal>> searchMealByName(String name){
         return webClient.get()
                         .uri(uriBuilder -> uriBuilder
                         .path("/api/json/v1/1/search.php")
                         .queryParam("s", name)
                         .build())
                 .retrieve()
-                .bodyToMono(Object.class);
+                .bodyToMono(MealResponse.class)
+                .map(MealResponse::getMeals);
     }
 
-    public Mono<Object> searchMealByFirstLetter(String firstLetter) {
+    public Mono<List<Meal>> searchMealByFirstLetter(String firstLetter) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/api/json/v1/1/search.php")
                         .queryParam("f", firstLetter)
                         .build())
                 .retrieve()
-                .bodyToMono(Object.class);
+                .bodyToMono(MealResponse.class)
+                .map(MealResponse::getMeals);
+    }
+
+    public Mono<List<Meal>> getRandomMeal(){
+        return this.webClient.get()
+                .uri("/api/json/v1/1/random.php")
+                .retrieve()
+                .bodyToMono(MealResponse.class)
+                .map(MealResponse::getMeals);
+
     }
 }

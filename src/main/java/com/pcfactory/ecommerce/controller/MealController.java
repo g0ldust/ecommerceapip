@@ -1,6 +1,7 @@
 package com.pcfactory.ecommerce.controller;
 
 import com.pcfactory.ecommerce.dto.Category;
+import com.pcfactory.ecommerce.dto.Meal;
 import com.pcfactory.ecommerce.service.MealService;
 import lombok.RequiredArgsConstructor;
 import lombok.Value;
@@ -24,7 +25,7 @@ public class MealController {
     }
 
     @GetMapping("/byname/search")
-    public Mono<Object> searchMeal(@RequestParam(value = "s", defaultValue = "Arrabiata") String mealName){
+    public Mono<List<Meal>> searchMealByName(@RequestParam(value = "s", defaultValue = "Arrabiata") String mealName){
         return mealService.searchMealByName(mealName);
     }
     @GetMapping("/byletter/search")
