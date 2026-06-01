@@ -38,7 +38,7 @@ public class MealService {
                         .build())
                 .retrieve()
                 .bodyToMono(MealResponse.class)
-                .map(MealResponse::getMeals);
+                .map(MealResponse:: getMeals);
     }
 
     public Mono<List<Meal>> searchMealByFirstLetter(String firstLetter) {
