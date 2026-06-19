@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 
 @RestController
-@RequestMapping("api/pagos")
+@RequestMapping("/api/pagos")
 
 public class PagoController {
     private final WebpayService webpayService;
@@ -29,7 +29,7 @@ public class PagoController {
     }
     @PostMapping("/confirmar")
     public Mono<ResponseEntity<Transaccion>> confirmarPago(@RequestParam("token_ws") String tokenWs){
-        return WebpayService.confirmarTransaccion(tokenWs)
+        return webpayService.confirmarTransaccion(tokenWs)
                 .map(ResponseEntity::ok)
                 .defaultIfEmpty(ResponseEntity.notFound().build());
     }

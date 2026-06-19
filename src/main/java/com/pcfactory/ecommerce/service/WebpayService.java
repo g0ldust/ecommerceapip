@@ -23,9 +23,9 @@ public class WebpayService {
     private final String API_KEY = "579B532A7440BB0C9079DED94D31EA1615B11956075CDDB4B838B6122EF26C0D";
     private final String BASE_URL = "https://webpay3gint.transbank.cl";
 
-    public WebpayService(TransaccionRepository transaccionRepository, WebClient webClient) {
+    public WebpayService(TransaccionRepository transaccionRepository, WebClient.Builder webClientBuilder) {
         this.transaccionRepository = transaccionRepository;
-        this.webClient = WebClient.builder()
+        this.webClient = webClientBuilder
                 .baseUrl(BASE_URL)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
                 .defaultHeader("Tbk-Api-Key-Id", COMMERCE_CODE)
