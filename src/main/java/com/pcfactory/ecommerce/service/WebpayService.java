@@ -16,15 +16,15 @@ import java.util.UUID;
 
 @Service
 public class WebpayService {
-    private final TransaccionRepository tansaccionRepository;
+    private final TransaccionRepository transaccionRepository;
     private final WebClient webClient;
 
     private final String COMMERCE_CODE = "597055555532";
     private final String API_KEY = "579B532A7440BB0C9079DED94D31EA1615B11956075CDDB4B838B6122EF26C0D";
     private final String BASE_URL = "https://webpay3gint.transbank.cl";
 
-    public WebpayService(TransaccionRepository tansaccionRepository, WebClient webClient) {
-        this.tansaccionRepository = tansaccionRepository;
+    public WebpayService(TransaccionRepository transaccionRepository, WebClient webClient) {
+        this.transaccionRepository = transaccionRepository;
         this.webClient = WebClient.builder()
                 .baseUrl(BASE_URL)
                 .defaultHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)
@@ -76,7 +76,7 @@ public Mono<Transaccion> confirmarTransaccion(String token){
                 .retrieve()
                 .bodyToMono(Map.class)
                 .map(response -> {
-                    Transaccion tx = tansaccionRepository.findByTokenWebpay(token)
+                    Transaccion tx = transaccionRepository.findByTokenWebpay(token)
                             .orElseThrow(() -> new RuntimeException("no existe registro con ese token"));
                     String status = (String) response.get("status");
 
@@ -87,7 +87,7 @@ public Mono<Transaccion> confirmarTransaccion(String token){
                     }
 
                     tx.setFechaConfirmacion(LocalDateTime.now());
-                    return tansaccionRepository.save(tx);
+                    return transaccionRepository.save(tx);
                 });
 }
 
