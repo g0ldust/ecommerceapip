@@ -10,6 +10,7 @@ import reactor.core.publisher.Mono;
 import java.util.Map;
 
 @RestController
+@RequestMapping("/api/pagos")
 
 
 public class PagoController {
