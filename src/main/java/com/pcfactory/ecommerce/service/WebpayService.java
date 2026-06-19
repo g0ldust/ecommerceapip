@@ -61,7 +61,7 @@ public Mono<Map<String, Object>> crearTransaccion(Long idVenta, Integer monto ) 
                     tx.setTokenWebpay(token);
                     tx.setEstado(EstadoTransaccion.CREADO);
                     tx.setFechaCreacion(LocalDateTime.now());
-                    transaccionRepository(tx);
+                    transaccionRepository.save(tx);
 
                     Map<String, Object> result= new HashMap<>();
                     result.put("token", token);
