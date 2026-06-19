@@ -47,7 +47,7 @@ public Mono<Map<String, Object>> crearTransaccion(Long idVenta, Integer monto ) 
         body.put("return_url", returnUrl);
 
         return webClient.post()
-                .uri("/rsen/card_codes/v1.2/trsansactions")
+                .uri("/rsenv/card_codes/v1.2/transactions")
                 .bodyValue(body)
                 .retrieve()
                 .bodyToMono(Map.class)
