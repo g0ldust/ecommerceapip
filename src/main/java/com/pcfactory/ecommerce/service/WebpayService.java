@@ -9,6 +9,10 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import reactor.core.publisher.Mono;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 @Service
 public class WebpayService {
     private final TansaccionRepository tansaccionRepository;
@@ -30,6 +34,29 @@ public class WebpayService {
 
     }
 
+public Mono<Map<String, Object>> crearTransaccion(Long idVenta, Integer monto ) {
+        String buyOrder = "OC-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+        String sessionId = "SESS-" + idVenta;
 
-    
+        String returnUrl = "http://localhost:8080/api/pagos/vistas/retorno" ;
+        Map<String, Object> body = new HashMap<>();
+        body.put("buy_order", buyOrder);
+        body.put("session_id", sessionId);
+        body.put("amount", monto);
+        body.put("return_url", returnUrl);
+
+        return webClient.post()
+                .uri("/rsen/card_codes/v1.2/trsansactions")
+                .bodyValue(body)
+                .retrieve()
+                .bodyToMono(Map.class)
+                .map(response ->{
+                    String token = (String) response.get("token");
+                    String url = (String) response.get("url");
+                    Transaccion tx = new Transaccion();
+                    tx.setBuyOrder(buyOrder);
+                    
+                });
+}
+
 }
