@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 
-public interface TansaccionRepository extends JpaRepository<Transaccion, String> {
+public interface TransaccionRepository extends JpaRepository<Transaccion, String> {
     Optional<Transaccion> findByTokenWebpay(String tokenWebpay);
 
 

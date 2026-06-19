@@ -1,6 +1,6 @@
 package com.pcfactory.ecommerce.model;
 
-public enum EstadoTansaccion {
+public enum EstadoTransaccion {
     CREADO,
     NOPAGADO,
     PAGADO

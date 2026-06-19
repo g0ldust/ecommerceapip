@@ -6,7 +6,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
@@ -32,7 +31,7 @@ public class Transaccion {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private EstadoTansaccion estado;
+    private EstadoTransaccion estado;
 
     @Column(name = "fecha_creacion")
     private LocalDateTime fechaCreacion;

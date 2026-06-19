@@ -1,28 +1,29 @@
 package com.pcfactory.ecommerce.service;
 
-import com.pcfactory.ecommerce.model.EstadoTansaccion;
+import com.pcfactory.ecommerce.model.EstadoTransaccion;
 import com.pcfactory.ecommerce.model.Transaccion;
 import org.springframework.stereotype.Service;
-import com.pcfactory.ecommerce.repository.TansaccionRepository;
+import com.pcfactory.ecommerce.repository.TransaccionRepository;
 import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import reactor.core.publisher.Mono;
 
+import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
 @Service
 public class WebpayService {
-    private final TansaccionRepository tansaccionRepository;
+    private final TransaccionRepository tansaccionRepository;
     private final WebClient webClient;
 
     private final String COMMERCE_CODE = "597055555532";
     private final String API_KEY = "579B532A7440BB0C9079DED94D31EA1615B11956075CDDB4B838B6122EF26C0D";
     private final String BASE_URL = "https://webpay3gint.transbank.cl";
 
-    public WebpayService(TansaccionRepository tansaccionRepository, WebClient webClient) {
+    public WebpayService(TransaccionRepository tansaccionRepository, WebClient webClient) {
         this.tansaccionRepository = tansaccionRepository;
         this.webClient = WebClient.builder()
                 .baseUrl(BASE_URL)
@@ -55,8 +56,41 @@ public Mono<Map<String, Object>> crearTransaccion(Long idVenta, Integer monto ) 
                     String url = (String) response.get("url");
                     Transaccion tx = new Transaccion();
                     tx.setBuyOrder(buyOrder);
-                    
+                    tx.setIdVenta(idVenta);
+                    tx.setMonto(monto);
+                    tx.setTokenWebpay(token);
+                    tx.setEstado(EstadoTransaccion.CREADO);
+                    tx.setFechaCreacion(LocalDateTime.now());
+                    transaccionRepository(tx);
+
+                    Map<String, Object> result= new HashMap<>();
+                    result.put("token", token);
+                    result.put("url", url);
+                    return result;
+
                 });
 }
+public Mono<Transaccion> confirmarTransaccion(String token){
+        return webClient.put()
+                .uri("/rsenv/card_codes/v1.2/transactions/" + token)
+                .retrieve()
+                .bodyToMono(Map.class)
+                .map(response -> {
+                    Transaccion tx = tansaccionRepository.findByTokenWebpay(token)
+                            .orElseThrow(() -> new RuntimeException("no existe registro con ese token"));
+                    String status = (String) response.get("status");
+
+                    if ("AUTHORIZED".equals(status)){
+                        tx.setEstado(EstadoTransaccion.PAGADO);
+                    }else {
+                        tx.setEstado(EstadoTransaccion.NOPAGADO);
+                    }
+
+                    tx.setFechaConfirmacion(LocalDateTime.now());
+                    return tansaccionRepository.save(tx);
+                });
+}
+
+
 
 }
